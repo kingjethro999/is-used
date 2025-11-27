@@ -1,0 +1,51 @@
+{
+  "name": "is-used",
+  "version": "1.0.0",
+  "description": "A static analysis tool that detects unused imports, variables, functions, and dependencies in JavaScript/TypeScript projects",
+  "main": "dist/index.js",
+  "bin": {
+    "is-used": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "static-analysis",
+    "unused-code",
+    "dead-code",
+    "imports",
+    "linter",
+    "code-quality",
+    "typescript",
+    "javascript",
+    "react"
+  ],
+  "author": "King Jethro <https://github.com/kingjethro999>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kingjethro999/is-used.git"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "@babel/types": "^7.23.0",
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2",
+    "glob": "^10.3.10",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.4",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.2",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
