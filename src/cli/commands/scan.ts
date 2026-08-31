@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { Analyzer } from '../../core/analyzer';
+import { FileDependencyTracker } from '../../core/file-dependency-tracker';
 import { TerminalReporter } from '../../reporters/terminal';
 import { JsonReporter } from '../../reporters/json';
 import { FileUtils } from '../../utils/file-utils';
@@ -15,6 +16,7 @@ export async function scanCommand(dirPath: string, options: ScanOptions): Promis
     const reporter = new TerminalReporter();
     const jsonReporter = new JsonReporter();
     const analyzer = new Analyzer();
+    const dependencyTracker = new FileDependencyTracker();
 
     try {
         // Resolve directory path
@@ -35,7 +37,7 @@ export async function scanCommand(dirPath: string, options: ScanOptions): Promis
         // Parse extensions
         const extensions = options.extensions
             ? FileUtils.normalizeExtensions(options.extensions.split(','))
-            : ['.js', '.jsx', '.ts', '.tsx'];
+            : ['.js', '.jsx', '.ts', '.tsx', '.vue'];
 
         // Get all files
         const spinner = ora('Scanning files...').start();
@@ -47,27 +49,73 @@ export async function scanCommand(dirPath: string, options: ScanOptions): Promis
             return;
         }
 
-        // Analyze files
+        // Analyze files for unused code
         const analyzeSpinner = ora('Analyzing files...').start();
         const results = analyzer.analyzeFiles(files);
         analyzeSpinner.succeed('Analysis complete');
 
+        // Detect unused files
+        const depSpinner = ora('Detecting unused files...').start();
+        dependencyTracker.analyzeFiles(files);
+
+        // Common entry points that don't need to be imported
+        const entryPoints = [
+            'index',
+            'main',
+            'app',
+            'App',
+            '_app',
+            'server',
+            'config',
+            '.config',
+            '.test',
+            '.spec',
+            'test',
+            'spec'
+        ];
+
+        const unusedFiles = dependencyTracker.getUnusedFiles(entryPoints);
+        depSpinner.succeed(`Found ${unusedFiles.length} unused files`);
+
         // Output results
         if (options.json) {
-            console.log(jsonReporter.report(results));
+            const projectResult = {
+                files: results,
+                unusedFiles,
+                summary: {
+                    totalFiles: files.length,
+                    totalUnusedFiles: unusedFiles.length,
+                    totalUnusedItems: results.reduce((sum, r) => sum + r.savings.unusedItemsCount, 0)
+                }
+            };
+            console.log(jsonReporter.reportProject(projectResult));
         } else {
             reporter.report(results);
+
+            // Report unused files
+            if (unusedFiles.length > 0) {
+                reporter.reportUnusedFiles(unusedFiles, absolutePath);
+            }
         }
 
         // Save to file if output specified
         if (options.output) {
-            jsonReporter.saveToFile(results, options.output);
+            const projectResult = {
+                files: results,
+                unusedFiles,
+                summary: {
+                    totalFiles: files.length,
+                    totalUnusedFiles: unusedFiles.length,
+                    totalUnusedItems: results.reduce((sum, r) => sum + r.savings.unusedItemsCount, 0)
+                }
+            };
+            jsonReporter.saveProjectToFile(projectResult, options.output);
             reporter.success(`Report saved to ${options.output}`);
         }
 
         // Exit with error code if issues found
         const totalIssues = results.reduce((sum, r) => sum + r.savings.unusedItemsCount, 0);
-        if (totalIssues > 0) {
+        if (totalIssues > 0 || unusedFiles.length > 0) {
             process.exit(1);
         }
 
