@@ -1,7 +1,7 @@
 import { ConfigFile } from '../reporters/types';
 
 export const defaultConfig: ConfigFile = {
-    include: ['src/**/*.{js,jsx,ts,tsx}'],
+    include: ['src/**/*.{js,jsx,ts,tsx,vue}'],
     exclude: [
         '**/*.test.*',
         '**/*.spec.*',
@@ -53,6 +53,8 @@ export const vuePreset: Partial<ConfigFile> = {
         interfaces: true,
         enums: true,
         computed: true,
+        methods: true,
+        data: true,
     },
 };
 

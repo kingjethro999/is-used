@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned Features
 - Auto-fix capabilities with dry-run mode
-- Vue.js framework support
 - Angular framework support
 - Watch mode for development
 - ESLint plugin integration
@@ -17,6 +16,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency analysis for package.json
 - Dead code detection (unreachable code)
 - CI mode with configurable max-issues threshold
+
+---
+
+## [1.0.1] - 2025-11-27
+
+### Added
+- **Init Command**
+  - New `is-used init` command to generate configuration files
+  - Automatic framework detection from package.json
+  - Framework-specific config templates (React, Vue, generic)
+  - Interactive setup with helpful next steps
+
+- **Vue.js Framework Support**
+  - Vue single-file component (.vue) parsing support
+  - Unused computed properties detection
+  - Unused methods detection
+  - Unused data properties detection
+  - Integration with @vue/compiler-sfc for SFC parsing
+  - Vue-specific configuration presets
+
+- **Unused File Detection**
+  - Detects entire files/components that are not imported anywhere
+  - Builds dependency graph to track file relationships
+  - Identifies orphaned files that can be safely removed
+  - Supports dynamic imports and require() calls
+  - Configurable entry points detection
+  - Helps clean up forgotten or abandoned code files
+
+### Changed
+- Updated default include patterns to support .vue files
+- Extended configuration types to include Vue-specific rules
+- Added @vue/compiler-sfc dependency for Vue SFC parsing
+- Added 'vue' to package keywords
 
 ---
 
@@ -110,27 +142,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Future Roadmap
 
-### [1.1.0] - Auto-fix & Enhancements (Planned)
+### Auto-fix & Enhancements (Planned)
 - Auto-fix capabilities
 - Dry-run mode
 - Safe mode (imports only)
 - Backup/restore functionality
 - Improved accuracy for edge cases
 
-### [1.2.0] - Vue.js Support (Planned)
+### Vue.js Support (Planned)
 - Vue single-file component (.vue) support
 - Composition API analysis
 - Options API analysis
 - Unused computed properties detection
 - Unused methods detection
 
-### [1.3.0] - Angular Support (Planned)
+### Angular Support (Planned)
 - Angular component analysis
 - Service and module detection
 - Decorator support
 - Dependency injection tracking
 
-### [2.0.0] - Advanced Features (Planned)
+### Advanced Features (Planned)
 - Watch mode for real-time analysis
 - ESLint plugin
 - VS Code extension

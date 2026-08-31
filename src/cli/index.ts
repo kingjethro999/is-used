@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { checkCommand } from './commands/check';
 import { scanCommand } from './commands/scan';
+import { initCommand } from './commands/init';
 
 const program = new Command();
 
@@ -10,6 +11,13 @@ program
     .name('is-used')
     .description('A static analysis tool that detects unused imports, variables, functions, and dependencies')
     .version('1.0.0');
+
+// Init command
+program
+    .command('init')
+    .description('Create a is-used.config.js file in your project root')
+    .option('-f, --framework <framework>', 'Framework to use (react, vue, none)')
+    .action(initCommand);
 
 // Check command
 program

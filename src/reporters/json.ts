@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { AnalysisResult } from './types';
+import { AnalysisResult, ProjectAnalysisResult } from './types';
 
 export class JsonReporter {
     /**
@@ -37,5 +37,27 @@ export class JsonReporter {
             totalUnusedItems: results.reduce((sum, r) => sum + r.savings.unusedItemsCount, 0),
             filesWithIssues: results.filter(r => r.savings.unusedItemsCount > 0).length,
         };
+    }
+
+    /**
+     * Generate JSON report for project analysis
+     */
+    reportProject(projectResult: ProjectAnalysisResult): string {
+        const report = {
+            timestamp: new Date().toISOString(),
+            summary: projectResult.summary,
+            unusedFiles: projectResult.unusedFiles,
+            fileAnalysis: projectResult.files,
+        };
+
+        return JSON.stringify(report, null, 2);
+    }
+
+    /**
+     * Save project report to file
+     */
+    saveProjectToFile(projectResult: ProjectAnalysisResult, outputPath: string): void {
+        const jsonReport = this.reportProject(projectResult);
+        fs.writeFileSync(outputPath, jsonReport, 'utf-8');
     }
 }

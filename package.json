@@ -1,7 +1,7 @@
 {
   "name": "is-used",
-  "version": "1.0.0",
-  "description": "A static analysis tool that detects unused imports, variables, functions, and dependencies in JavaScript/TypeScript projects",
+  "version": "1.0.1",
+  "description": "A static analysis tool that detects unused imports, variables, functions, dependencies, and entire files in JavaScript/TypeScript projects",
   "main": "dist/index.js",
   "bin": {
     "is-used": "./dist/cli/index.js"
@@ -21,7 +21,8 @@
     "code-quality",
     "typescript",
     "javascript",
-    "react"
+    "react",
+    "vue"
   ],
   "author": "King Jethro <https://github.com/kingjethro999>",
   "license": "MIT",
@@ -33,6 +34,7 @@
     "@babel/parser": "^7.23.0",
     "@babel/traverse": "^7.23.0",
     "@babel/types": "^7.23.0",
+    "@vue/compiler-sfc": "^3.4.0",
     "commander": "^11.1.0",
     "chalk": "^4.1.2",
     "glob": "^10.3.10",
