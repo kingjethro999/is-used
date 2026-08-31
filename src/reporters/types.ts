@@ -3,10 +3,23 @@ export interface AnalysisResult {
     unusedImports: UnusedImport[];
     unusedVariables: UnusedVariable[];
     unusedFunctions: UnusedFunction[];
+    unusedVueComputed?: UnusedVueItem[];
+    unusedVueMethods?: UnusedVueItem[];
+    unusedVueData?: UnusedVueItem[];
     usedItems: UsedItem[];
     savings: {
         estimatedSizeReduction: string;
         unusedItemsCount: number;
+    };
+}
+
+export interface ProjectAnalysisResult {
+    files: AnalysisResult[];
+    unusedFiles: string[];
+    summary: {
+        totalFiles: number;
+        totalUnusedFiles: number;
+        totalUnusedItems: number;
     };
 }
 
@@ -32,6 +45,11 @@ export interface UnusedFunction {
     line: number;
     column: number;
     fix: 'remove';
+}
+
+export interface UnusedVueItem {
+    name: string;
+    line: number;
 }
 
 export interface UsedItem {
@@ -62,6 +80,8 @@ export interface ConfigFile {
         hooks?: boolean;
         props?: boolean;
         computed?: boolean;
+        methods?: boolean;
+        data?: boolean;
     };
     fix?: {
         imports: boolean;
