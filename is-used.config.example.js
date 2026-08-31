@@ -1,6 +1,6 @@
 module.exports = {
     // Files to analyze
-    include: ['src/**/*.{js,jsx,ts,tsx}'],
+    include: ['src/**/*.{js,jsx,ts,tsx,vue}'],
 
     // Files to ignore
     exclude: ['**/*.test.*', '**/*.spec.*', 'node_modules'],
@@ -19,6 +19,8 @@ module.exports = {
         hooks: true,      // React
         props: true,      // React
         computed: true,   // Vue
+        methods: true,    // Vue
+        data: true,       // Vue
     },
 
     // Auto-fix behavior

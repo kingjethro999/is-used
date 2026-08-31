@@ -1,6 +1,7 @@
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as fs from 'fs';
+import { parse as parseVueSFC } from '@vue/compiler-sfc';
 
 export interface ParsedFile {
     ast: any;
@@ -13,7 +14,22 @@ export class Parser {
      * Parse a JavaScript/TypeScript file and return its AST
      */
     parseFile(filePath: string): ParsedFile {
-        const code = fs.readFileSync(filePath, 'utf-8');
+        let code = fs.readFileSync(filePath, 'utf-8');
+
+        // Handle Vue SFC files
+        if (filePath.endsWith('.vue')) {
+            const { descriptor } = parseVueSFC(code, { filename: filePath });
+
+            // Extract script content
+            if (descriptor.script) {
+                code = descriptor.script.content;
+            } else if (descriptor.scriptSetup) {
+                code = descriptor.scriptSetup.content;
+            } else {
+                // No script section, return empty AST
+                code = '';
+            }
+        }
 
         const ast = parser.parse(code, {
             sourceType: 'module',
@@ -57,7 +73,7 @@ export class Parser {
      * Check if file is supported
      */
     isSupportedFile(filePath: string): boolean {
-        const supportedExtensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs'];
+        const supportedExtensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.vue'];
         return supportedExtensions.some(ext => filePath.endsWith(ext));
     }
 }
